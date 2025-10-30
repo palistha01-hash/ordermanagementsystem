@@ -1,0 +1,571 @@
+name: Orders
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/orders
+    metadata:
+      custom: []
+      groupName: Orders
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'List all orders'
+      description: |-
+        Retrieve a paginated list of orders belonging to the authenticated user.
+        You can optionally filter by status and date range.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters:
+      status:
+        custom: []
+        name: status
+        description: 'Filter by order status.'
+        required: false
+        example: pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      from:
+        custom: []
+        name: from
+        description: 'date Filter orders created on or after this date (YYYY-MM-DD).'
+        required: false
+        example: '2025-10-01'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      to:
+        custom: []
+        name: to
+        description: 'date Filter orders created on or before this date (YYYY-MM-DD).'
+        required: false
+        example: '2025-10-29'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanQueryParameters:
+      status: pending
+      from: '2025-10-01'
+      to: '2025-10-29'
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "customer_name": "John Doe",
+                "order_items": [
+                  {
+                    "product_name": "Shampoo",
+                    "quantity": 45,
+                    "price": 56
+                  }
+                ],
+                "order_status": "pending",
+                "total_amount": 2520,
+                "created_at": "2025-10-29T10:45:36+00:00",
+                "updated_at": "2025-10-29T10:45:36+00:00"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/orders
+    metadata:
+      custom: []
+      groupName: Orders
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Create a new order'
+      description: 'Stores a new order for the authenticated user.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      order_items:
+        custom: []
+        name: order_items
+        description: 'The list of items in the order.'
+        required: true
+        example:
+          - item1
+          - item2
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      total_amount:
+        custom: []
+        name: total_amount
+        description: 'The total price of the order.'
+        required: true
+        example: '1499.50'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'order_items[].product_name':
+        custom: []
+        name: 'order_items[].product_name'
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'order_items[].quantity':
+        custom: []
+        name: 'order_items[].quantity'
+        description: 'Must be at least 1.'
+        required: true
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'order_items[].price':
+        custom: []
+        name: 'order_items[].price'
+        description: 'Must be at least 0.'
+        required: true
+        example: 56
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      order_status:
+        custom: []
+        name: order_status
+        description: 'The current status of the order.'
+        required: false
+        example: pending
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      order_items:
+        - item1
+        - item2
+      total_amount: '1499.50'
+      order_status: pending
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 6,
+              "customer_name": "admin",
+              "order_items": [
+                {
+                  "product_name": "consequatur",
+                  "quantity": 1,
+                  "price": 56
+                }
+              ],
+              "order_status": "pending",
+              "total_amount": 56
+            }
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: 'api/orders/{id}'
+    metadata:
+      custom: []
+      groupName: Orders
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Show order details'
+      description: 'Retrieve a specific order by its ID belonging to the authenticated user.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the order.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 6,
+              "customer_name": "admin",
+              "order_items": [
+                {
+                  "product_name": "consequatur",
+                  "quantity": 1,
+                  "price": 56
+                }
+              ],
+              "order_status": "pending",
+              "total_amount": 56
+            }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 404
+        content: |-
+          {
+            "message": "Order not found."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+      - PATCH
+    uri: 'api/orders/{id}'
+    metadata:
+      custom: []
+      groupName: Orders
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update an existing order'
+      description: 'Update the details of an order (except completed orders).'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the order to update.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      order_items:
+        custom: []
+        name: order_items
+        description: 'Updated list of order items.'
+        required: true
+        example:
+          - itemA
+          - itemB
+        type: 'string[]'
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      total_amount:
+        custom: []
+        name: total_amount
+        description: 'Updated total price of the order.'
+        required: true
+        example: '1999.99'
+        type: numeric
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'order_items[].product_name':
+        custom: []
+        name: 'order_items[].product_name'
+        description: ''
+        required: true
+        example: consequatur
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'order_items[].quantity':
+        custom: []
+        name: 'order_items[].quantity'
+        description: 'Must be at least 1.'
+        required: true
+        example: 45
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      'order_items[].price':
+        custom: []
+        name: 'order_items[].price'
+        description: 'Must be at least 0.'
+        required: true
+        example: 56
+        type: number
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      order_items:
+        - itemA
+        - itemB
+      total_amount: '1999.99'
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": [
+              {
+                "id": 1,
+                "customer_name": "John Doe",
+                "order_items": [
+                  {
+                    "product_name": "Shampoo",
+                    "quantity": 45,
+                    "price": 56
+                  }
+                ],
+                "order_status": "pending",
+                "total_amount": 2520,
+                "created_at": "2025-10-29T10:45:36+00:00",
+                "updated_at": "2025-10-29T10:45:36+00:00"
+              }
+            ]
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: 'api/orders/{id}'
+    metadata:
+      custom: []
+      groupName: Orders
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Delete an order'
+      description: 'Permanently delete an order belonging to the authenticated user.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the order to delete.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "message": "Deleted."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: 'api/orders/{id}/status'
+    metadata:
+      custom: []
+      groupName: Orders
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update order status'
+      description: |-
+        Change the status of an existing order.
+        Ensures valid status transition using the OrderStatusService.
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {token}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        custom: []
+        name: id
+        description: 'The ID of the order.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      order_status:
+        custom: []
+        name: order_status
+        description: 'The new status for the order.'
+        required: true
+        example: completed
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      order_status: completed
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: |-
+          {
+            "data": {
+              "id": 5,
+              "customer_name": "palistha",
+              "order_items": [
+                {
+                  "price": 56,
+                  "quantity": 1,
+                  "product_name": "washing machine"
+                }
+              ],
+              "order_status": "processing",
+              "total_amount": 56
+            }
+          }
+        headers: []
+        description: ''
+      -
+        custom: []
+        status: 422
+        content: |-
+          {
+            "message": "Failed to update order status."
+            "error": "Cannot change status from processing to pending."
+          }
+        headers: []
+        description: ''
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
