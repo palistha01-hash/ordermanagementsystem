@@ -127,7 +127,31 @@ class OrderControllerTest extends TestCase
             ->assertJsonCount(5, 'data');
     }
 
- 
+    public function test_user_can_filter_orders_by_date_range()
+    {
+        $user = User::factory()->create();
+        Sanctum::actingAs($user, ['*']);
+
+        $today = Carbon::today();
+        $yesterday = Carbon::yesterday();
+        $threeDaysAgo = Carbon::today()->subDays(3);
+
+        // Order 1: 3 days ago (outside range)
+        Order::factory()->create(['user_id' => $user->id, 'created_at' => $threeDaysAgo]);
+        // Order 2: Yesterday (in range)
+        Order::factory()->create(['user_id' => $user->id, 'created_at' => $yesterday]);
+        // Order 3: Today (in range)
+        Order::factory()->create(['user_id' => $user->id, 'created_at' => $today]);
+
+        // Filter from YESTERDAY to TODAY
+        $from = $yesterday->toDateString();
+        $to = $today->toDateString();
+        $response = $this->getJson("/api/orders?from={$from}&to={$to}");
+
+        $response->assertStatus(200)
+                 ->assertJsonPath('total', 2) // Should only get 2 orders (yesterday and today)
+                 ->assertJsonCount(2, 'data');
+    }
 
     public function test_user_can_view_their_single_order()
     {
@@ -148,7 +172,7 @@ class OrderControllerTest extends TestCase
         $otherUser = User::factory()->create();
         $order     = Order::factory()->create(['user_id' => $otherUser->id]); // Order belongs to otherUser
 
-        Sanctum::actingAs($user, ['*']); // Acting as the unauthorized user
+        Sanctum::actingAs($user, ['*']); 
 
         $response = $this->getJson("/api/orders/{$order->id}");
 
@@ -156,7 +180,40 @@ class OrderControllerTest extends TestCase
             ->assertJsonPath('message', 'Order not found.');
     }
 
+    // --- UPDATE Method Tests (Edit) ---
+
+    public function test_user_can_update_their_order()
+    {
+        $user = User::factory()->create();
+        $order = Order::factory()->create(['user_id' => $user->id]);
+    
+        Sanctum::actingAs($user, ['*']);
+    
+        $newPayload = [
+            'customer_name' => $user->name,
+            'order_items' => [
+                ['product_name' => 'Laptop', 'quantity' => 2, 'price' => 200],
+                ['product_name' => 'Mouse', 'quantity' => 1, 'price' => 100],
+            ],
+        ];
+    
    
+        $newPayload['total_amount'] = collect($newPayload['order_items'])
+            ->sum(fn($i) => $i['quantity'] * $i['price']);
+    
+        $response = $this->putJson("/api/orders/{$order->id}", $newPayload);
+    
+        $response->assertStatus(200)
+                 ->assertJsonPath('data.total_amount', $newPayload['total_amount']);
+    
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'total_amount' => $newPayload['total_amount'],
+        ]);
+    }
+    
+
+
     // --- DESTROY Method Tests (Soft Delete) ---
 
     public function test_user_can_soft_delete_their_order()
@@ -171,7 +228,6 @@ class OrderControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonPath('message', 'Deleted.');
 
-        // Assert that the record exists but has a deleted_at timestamp
         $this->assertSoftDeleted('orders', [
             'id'      => $order->id,
             'user_id' => $user->id,
@@ -183,9 +239,7 @@ class OrderControllerTest extends TestCase
         $user      = User::factory()->create();
         $otherUser = User::factory()->create();
         $order     = Order::factory()->create(['user_id' => $otherUser->id]);
-
         Sanctum::actingAs($user, ['*']);
-
         $response = $this->deleteJson("/api/orders/{$order->id}");
 
         $response->assertStatus(404) // Should fail with 404

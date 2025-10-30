@@ -59,9 +59,7 @@ class OrderFactory extends Factory
             // Randomly pick an order status
             'order_status'  => $this->faker->randomElement([
                 'pending', 
-                'processing', 
-                'shipped', 
-                'delivered', 
+                'processing',               
                 'cancelled'
             ]),
             
